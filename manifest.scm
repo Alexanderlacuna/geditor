@@ -5,4 +5,5 @@
        "guile"
        "git"
        "guile-commonmark"
+       "guile-json"
        ))
