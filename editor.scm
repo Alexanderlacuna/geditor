@@ -43,8 +43,12 @@
 
 
 (define (commit-file repo-path file-path new-content commit-message)
-  (define full-file-path (string-append repo-path "/" file-path))
-  (match (file-exists? full-file-path)
+  (if (not (is-git-repo? repo-path))
+      (list (cons 'error (string-append "The Folder  *" repo-path  "* is  not a Git repository")))
+      (begin
+
+  (let* ((full-file-path (string-append repo-path "/" file-path)))
+    (match (file-exists? full-file-path)
     (#f
      (list (cons 'error (string-append "The file " file-path " does not exist"))))
     (#t
@@ -63,7 +67,9 @@
                  (list (cons 'success (string-append " : Committed changes with message: " commit-message " New Commit SHA: " commit-sha)))
                  (list (cons 'success "  :nothing to commit, working tree clean")))
              (list (cons 'error "Error adding changes"))))))))
-
+        )
+      )
+  )
 
 ;;parse implemenontation
 (define (read-file filename)
