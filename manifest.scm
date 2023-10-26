@@ -6,4 +6,5 @@
        "git"
        "guile-commonmark"
        "guile-json"
+       "curl"
        ))
