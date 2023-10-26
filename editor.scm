@@ -25,8 +25,6 @@
 
 )
 
-
-
 (define (git-invoke repo-path . args)
   (apply system* "git" "-C" repo-path args))
 
@@ -34,8 +32,6 @@
 (define (is-git-repo? dir)
   (define git-dir (string-append dir "/.git"))
   (file-exists? git-dir))
-
-
 
 
 (define (get_latest_commit_sha1 repo-path)
@@ -67,8 +63,6 @@
                  (list (cons 'success (string-append " : Committed changes with message: " commit-message " New Commit SHA: " commit-sha)))
                  (list (cons 'success "  :nothing to commit, working tree clean")))
              (list (cons 'error "Error adding changes"))))))))
-
-
 
 
 ;;parse implemenontation
