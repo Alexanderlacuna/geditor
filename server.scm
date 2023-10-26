@@ -113,8 +113,6 @@
 
 
 
-
-
 (define (edit-file-handler request body)
   (let ((post-data (if (eq? (request-method request) 'POST)
                      (decode-request-body body)
@@ -172,7 +170,9 @@
 (define (main-handler request body)
   (match (cons (request-method request)
                (request-path-components request))
-    (('POST "commit") (commit-file-handler request body))
+    (('POST "commit") 
+      ;;add auth check here
+      (commit-file-handler request body))
     (('POST "edit") (edit-file-handler request body))
     (('POST "parse") (parse-markdown-handler request body))
     (('GET) (main-form-handler request body))
