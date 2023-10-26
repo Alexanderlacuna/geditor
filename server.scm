@@ -134,6 +134,22 @@
         ))))
 
 
+(define (parse-markdown-handler request body)
+  (let ((post-data (if (eq? (request-method request) 'POST)
+                     (decode-request-body body)
+                     #f)))
+    (if post-data
+        (let ((metadata (assoc-ref post-data 'metadata)) 
+              (markdown-text (assoc-ref post-data 'markdown))) 
+            (with-output-to-response 'text/html 
+              (lambda ()
+                 (parse-markdown-text  markdown-text)
+              )))
+        (with-output-to-response 'text/plain
+          (lambda ()
+            (display "No valid data received.")
+          )))))
+
 
 (define (main-handler request body)
   (match (cons (request-method request)

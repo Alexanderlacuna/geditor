@@ -6,6 +6,7 @@
         convert-markdown-to-xml
         commit-file
         get-file-content
+        parse-markdown-text
   )
 #:use-module  (commonmark)
 #:use-module  (commonmark sxml)
@@ -81,6 +82,7 @@
     response-body))
 
 (define (write-xml-to-file file-name xml)
+  (display xml)
   (with-output-to-file file-name
     (lambda ()
       (sxml->xml xml))))
@@ -90,6 +92,12 @@
   (let ((markdown-parser (commonmark->sxml markdown-text)))
     (write-xml-to-file output-filename markdown-parser)))
 
+
+(define (parse-markdown-text markdown-text)
+  "parse markdown file"
+  (let ((markdown-parser (commonmark->sxml markdown-text)))
+    (sxml->xml markdown-parser))
+  )
 
 (define (get-file-content file-path)
   (if (file-exists? file-path)
