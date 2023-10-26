@@ -17,8 +17,11 @@
              (web http)
              (web uri)
              (rnrs bytevectors)
-             (editor)
+             (geditor editor)
              (json))
+
+
+
 
 (define (render-json json)
   (list '((content-type . (application/json)))
@@ -137,7 +140,7 @@
                (request-path-components request))
     (('POST "commit") (commit-file-handler request body))
     (('POST "edit") (edit-file-handler request body))
-    (('POST' "parse") (parse-markdown-handler request body))
+    (('POST "parse") (parse-markdown-handler request body))
     (('GET) (main-form-handler request body))
     (_ (not-found-handler))))
 

@@ -1,24 +1,30 @@
 
 
-(define-module (markeditor editor)
+(define-module (geditor editor)
+
+#:export (commit-file
+        convert-markdown-to-xml
+        commit-file
+        get-file-content
+  )
+#:use-module  (commonmark)
 #:use-module  (commonmark sxml)
 #:use-module  (sxml simple)
 #:use-module (ice-9 popen)
 #:use-module (ice-9 format)
 #:use-module (ice-9 rdelim)
 #:use-module (ice-9 match)
+#:use-module (ice-9  receive)
 #:use-module (ice-9 textual-ports)
 #:use-module (web request)
+#:use-module (web response)
 #:use-module (web uri)
 #:use-module (sxml simple)
 #:use-module (web client)
 
-
-
-#:export (commit-file)
-         (get-file-content)
-         (convert-markdown-to-xml)
 )
+
+
 
 (define (git-invoke repo-path . args)
   (apply system* "git" "-C" repo-path args))
@@ -27,6 +33,8 @@
 (define (is-git-repo? dir)
   (define git-dir (string-append dir "/.git"))
   (file-exists? git-dir))
+
+
 
 
 (define (get_latest_commit_sha1 repo-path)
