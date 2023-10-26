@@ -8,7 +8,16 @@ GEditor  is a  small tool(WIP) written in guile to edit files and commit changes
 * parse markdown to html
 * edit markdown,preview and commit changes to a local repo
 
+
+
 ## Examples
+
+;; using guix
+
+```
+guix shell -C manifest.scm
+
+```
 
 * to commit changes
 ```bash
