@@ -112,15 +112,7 @@
         ))))
 
 
-(define (edit-file-handler request body)
-  (let ([post-data (if (eq? (request-method request) 'POST)
-                     (decode-request-body body)
-                     #f)])
-   ;;implementation in  edito scm file
-    (with-output-to-response 'application/json
-      (lambda ()
-       (display (scm->json-string post-data))
-        ))))
+
 
 
 (define (commit-file-handler request body)
@@ -134,12 +126,33 @@
         ))))
 
 
+
+
+
+(define (edit-file-handler request body)
+
+  (let ((post-data (if (eq? (request-method request) 'POST)
+                     (decode-request-body body)
+                     #f)))
+    (if post-data
+        (let ((file-name (assoc-ref post-data 'filename)) ;;todo
+              (repo (assoc-ref post-data 'repo))) 
+            (with-output-to-response 'application/json
+              (lambda ()
+                 (display (scm->json-string (get-file-content  (string-append repo "/" file-name)))) ;;add check for is repo here
+              )))
+        (with-output-to-response 'text/plain
+          (lambda ()
+            (display "No valid data received.")
+          )))))
+
+
 (define (parse-markdown-handler request body)
   (let ((post-data (if (eq? (request-method request) 'POST)
                      (decode-request-body body)
                      #f)))
     (if post-data
-        (let ((metadata (assoc-ref post-data 'metadata)) 
+        (let ((metadata (assoc-ref post-data 'metadata)) ;;todo
               (markdown-text (assoc-ref post-data 'markdown))) 
             (with-output-to-response 'text/html 
               (lambda ()

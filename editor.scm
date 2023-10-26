@@ -99,18 +99,23 @@
     (sxml->xml markdown-parser))
   )
 
+
+
+
+
+
 (define (get-file-content file-path)
   (if (file-exists? file-path)
-      (let ((lines '()))
+      (let ((lines '())
+            (file-name (basename file-path))) ; Get the file name from the path
         (call-with-input-file file-path
           (lambda (port)
             (let loop ()
               (let ((line (read-line port)))
                 (if (eof-object? line)
-                    (string-join (reverse lines) "\n")
+                    (list (cons 'file_name file-name)
+                          (cons 'file_content (string-join (reverse lines) "\n")))
                     (begin
                       (set! lines (cons line lines))
                       (loop))))))))
       #f))
-
-
