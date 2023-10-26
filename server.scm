@@ -6,7 +6,6 @@
 ;;
 ;;    localhost:8080/
 
-
 (use-modules (ice-9 match)
              (ice-9 receive)
              (sxml simple)
@@ -21,8 +20,6 @@
              (json))
 
 
-
-
 (define (render-json json)
   (list '((content-type . (application/json)))
         (lambda (port)
@@ -31,8 +28,6 @@
 
 (define (request-path-components request)
   (split-and-decode-uri-path (uri-path (request-uri request))))
-
-
 
 (define (decode-query query)
   (if (not query)
@@ -64,26 +59,6 @@
         [else default]))
 
 
-
-;;test implementation
-(define (main-form request body)
-  `(html
-    (@ (xmlns "http://www.w3.org/1999/xhtml"))
-    (head (title "Gn markdown editor"))
-    (script ,"test1")
-    (body
-     (input (@ (id "number") (type "text") (size "50") (value "")))
-     (button (@ (type "button") (onclick "test_btn()")) "Compute "))))
-
-;;define handlers implementations
-(define (main-form-handler request body)
-  (values (build-response
-           #:headers '((content-type . (application/xhtml+xml))))
-          (lambda (port)
-            (sxml->xml (main-form request body) port))))
-
-
-
 (define (not-found-handler)
   (values (build-response #:code 404)
           "Resource not found"))
@@ -92,25 +67,6 @@
   (values (build-response #:code 302
                           #:headers `((location . ,(string->uri uri))))
           "Nan"))
-
-(define (render-main-page blog)
-  (display  "
-    <h3>Edit markdown</h3>
-    <ul>
-        <li><a href='/editor?rss=entries'>Feed dos posts</a>
-    </ul>
-"))
-
-;;test  for general handler
-(define (handle-collection-request request body)
-  (define query  (decode-query (uri-query (request-uri request))))
-  (let*-values ([(page) (string->number (alist-ref query 'page "1"))]
-                [(tag) (alist-ref query 'tag)])
-    (with-output-to-response 'text/html
-      (lambda ()
-        (render-main-page "editor")
-        ))))
-
 
 
 (define (edit-file-handler request body)
@@ -166,16 +122,14 @@
           )))))
 
 
-
 (define (main-handler request body)
   (match (cons (request-method request)
                (request-path-components request))
     (('POST "commit") 
-      ;;add auth check here
+      ;;add 
       (commit-file-handler request body))
     (('POST "edit") (edit-file-handler request body))
     (('POST "parse") (parse-markdown-handler request body))
-    (('GET) (main-form-handler request body))
     (_ (not-found-handler))))
 
 
