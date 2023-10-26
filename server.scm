@@ -115,22 +115,7 @@
 
 
 
-(define (commit-file-handler request body)
-  (let ([post-data (if (eq? (request-method request) 'POST)
-                     (decode-request-body body)
-                     #f)])
-  ;;see editor scm for the implementation
-    (with-output-to-response 'application/json
-      (lambda ()
-       (display (scm->json-string post-data))
-        ))))
-
-
-
-
-
 (define (edit-file-handler request body)
-
   (let ((post-data (if (eq? (request-method request) 'POST)
                      (decode-request-body body)
                      #f)))
@@ -162,6 +147,26 @@
           (lambda ()
             (display "No valid data received.")
           )))))
+
+
+(define (commit-file-handler request body)
+  (let ((post-data (if (eq? (request-method request) 'POST)
+                     (decode-request-body body)
+                     #f)))
+    (if post-data
+        (let ((file-name (assoc-ref post-data 'filename)) ;;todo
+              (msg   (assoc-ref post-data 'msg))
+              (content (assoc-ref post-data 'content))
+              (repo (assoc-ref post-data 'repo))) 
+            (with-output-to-response 'application/json
+              (lambda ()
+                 (display (scm->json-string (commit-file repo file-name content msg))) ;;add check for is repo here
+              )))
+        (with-output-to-response 'text/plain
+          (lambda ()
+            (display "No valid data received.")
+          )))))
+
 
 
 (define (main-handler request body)

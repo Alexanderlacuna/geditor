@@ -45,11 +45,12 @@
     commit-sha))
 
 
+
 (define (commit-file repo-path file-path new-content commit-message)
-  (define full-file-path (string-append repo-path file-path))
+  (define full-file-path (string-append repo-path "/" file-path))
   (match (file-exists? full-file-path)
     (#f
-     (values 'error (string-append "The file " file-path " does not exist")))
+     (list (cons 'error (string-append "The file " file-path " does not exist"))))
     (#t
      (begin
        (with-output-to-file full-file-path
@@ -63,9 +64,11 @@
        ;;use a match expression
          (if (= add-status 0)
              (if (= commit-status 0)
-                 (values 'success (string-append " : Committed changes with message: " commit-message " New Commit SHA: " commit-sha))
-                 (values 'success "  :nothing to commit, working tree clean"))
-             (values 'error "Error adding changes")))))))
+                 (list (cons 'success (string-append " : Committed changes with message: " commit-message " New Commit SHA: " commit-sha)))
+                 (list (cons 'success "  :nothing to commit, working tree clean")))
+             (list (cons 'error "Error adding changes"))))))))
+
+
 
 
 ;;parse implemenontation
@@ -99,11 +102,6 @@
     (sxml->xml markdown-parser))
   )
 
-
-
-
-
-
 (define (get-file-content file-path)
   (if (file-exists? file-path)
       (let ((lines '())
@@ -119,3 +117,4 @@
                       (set! lines (cons line lines))
                       (loop))))))))
       #f))
+
