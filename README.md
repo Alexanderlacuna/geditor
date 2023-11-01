@@ -15,8 +15,12 @@ GEditor  is a  small tool(WIP) written in guile to edit files and commit changes
 ;; using guix
 
 ```
-guix shell -C manifest.scm
+guix shell 
 
+```
+
+```
+guix shell --container --network --expose=$HOME/repo=/target_repo
 ```
 
 * to commit changes
