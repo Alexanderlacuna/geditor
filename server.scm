@@ -47,6 +47,8 @@
     (decode-query (utf8->string body))))
 
 
+
+
 (define (with-output-to-response content-type thunk)
   (values `((content-type . (,content-type (charset . "UTF-8"))))
           (lambda (port)
@@ -59,9 +61,17 @@
         [else default]))
 
 
-(define (not-found-handler)
+
+
+
+
+
+(define (not-found-404-handler  request)
+    "Answer with a 404 http status code"
   (values (build-response #:code 404)
-          "Resource not found"))
+           (string-append "request resource not found: "
+            (uri->string (request-uri request)))))
+
 
 (define (redirect-response uri)
   (values (build-response #:code 302
@@ -69,13 +79,20 @@
           "Nan"))
 
 
+(define (decode-request-json body)
+  (if (not body)
+      '()
+    (json-string->scm (utf8->string body))))
+
+
+
 (define (edit-file-handler request body)
   (let ((post-data (if (eq? (request-method request) 'POST)
-                     (decode-request-body body)
+                     (decode-request-json body)
                      #f)))
     (if post-data
-        (let ((file-name (assoc-ref post-data 'filename)) ;;todo
-              (repo (assoc-ref post-data 'repo))) 
+        (let ((file-name (assoc-ref post-data "filename")) ;;todo
+              (repo (assoc-ref post-data "repo"))) 
             (with-output-to-response 'application/json
               (lambda ()
                  (display (scm->json-string (get-file-content  (string-append repo "/" file-name)))) ;;add check for is repo here
@@ -86,13 +103,16 @@
           )))))
 
 
+
+
+
 (define (parse-markdown-handler request body)
   (let ((post-data (if (eq? (request-method request) 'POST)
-                     (decode-request-body body)
+                     (json-string->scm (utf8->string body))
                      #f)))
+   ;;fix this                  
     (if post-data
-        (let ((metadata (assoc-ref post-data 'metadata)) ;;todo
-              (markdown-text (assoc-ref post-data 'markdown))) 
+        (let ((markdown-text (assoc-ref post-data "markdown"))) 
             (with-output-to-response 'text/html 
               (lambda ()
                  (parse-markdown-text  markdown-text)
@@ -103,23 +123,27 @@
           )))))
 
 
+
+
 (define (commit-file-handler request body)
   (let ((post-data (if (eq? (request-method request) 'POST)
-                     (decode-request-body body)
+                     (decode-request-json body)
                      #f)))
     (if post-data
-        (let ((file-name (assoc-ref post-data 'filename)) ;;todo
-              (msg   (assoc-ref post-data 'msg))
-              (content (assoc-ref post-data 'content))
-              (repo (assoc-ref post-data 'repo))) 
+        (let ((file-name (assoc-ref post-data "filename")) ;;todo
+              (msg   (assoc-ref post-data "msg"))
+              (content (assoc-ref post-data "content"))
+              (repo (assoc-ref post-data "repo"))) 
             (with-output-to-response 'application/json
               (lambda ()
-                 (display (scm->json-string (commit-file repo file-name content msg))) ;;add check for is repo here
+                 (display (scm->json-string (commit-file repo file-name content msg))) 
               )))
         (with-output-to-response 'text/plain
           (lambda ()
             (display "No valid data received.")
           )))))
+
+
 
 
 (define (main-handler request body)
@@ -130,7 +154,8 @@
       (commit-file-handler request body))
     (('POST "edit") (edit-file-handler request body))
     (('POST "parse") (parse-markdown-handler request body))
-    (_ (not-found-handler))))
+    (_ (not-found-404-handler request))))
+
 
 
 
