@@ -44,9 +44,7 @@
 
 (define (set-git-configs repo-path configs)
   (define (set-git-config key value)
-    (let ((config-string (string-append "user." key " \"" value "\"")))
-      (git-invoke repo-path "config" config-string)))
-
+    (git-invoke repo-path "config" "--local" key value))
   (for-each (lambda (pair)
               (set-git-config (car pair) (cdr pair)))
             configs))
@@ -68,6 +66,8 @@
        (with-output-to-file full-file-path
          (lambda ()
            (display new-content)))
+       ;;auth should be passed here
+       (set-git-configs repo-path '(("user.name" . "genenetwork-admin") ("user.email" . "genenetwork.org")))
        (let* ((add-status (git-invoke repo-path "add" file-path))
               (commit-status (git-invoke repo-path "commit" "-m" commit-message))
               (commit-sha (if (= commit-status 0)
