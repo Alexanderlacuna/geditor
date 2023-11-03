@@ -42,6 +42,18 @@
 
 
 
+(define (set-git-configs repo-path configs)
+  (define (set-git-config key value)
+    (let ((config-string (string-append "user." key " \"" value "\"")))
+      (git-invoke repo-path "config" config-string)))
+
+  (for-each (lambda (pair)
+              (set-git-config (car pair) (cdr pair)))
+            configs))
+
+
+
+
 (define (commit-file repo-path file-path new-content commit-message)
   (if (not (is-git-repo? repo-path))
       (list (cons 'error (string-append "The Folder  *" repo-path  "* is  not a Git repository")))
