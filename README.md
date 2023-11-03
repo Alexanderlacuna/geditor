@@ -41,10 +41,12 @@ guix -L .. server.scm
 *  to commit changes
 
 ```bash
- curl -X POST http://127.0.0.1:8080/edit -H 'Content-Type: application/json' -d '{"msg":"make test commit","filename":"test.md","repo":"/test_repo","filename":"test.md","content":"new content"}'
+ curl -X POST http://127.0.0.1:8080/commit -H 'Content-Type: application/json' -d '{"msg":"make test commit","filename":"test.md","repo":"/test_repo","filename":"test.md","content":"new content"}'
 
 ```
 
+
+expected results
 
 ```json
 //expected eample results
@@ -62,9 +64,12 @@ guix -L .. server.scm
 
 ```
 
+
+expected results
 ```json
-//expected results
-{"file_name":"test.md","file_content":"new content"}kabui@kabui-20NUS0EB00:~$ 
+
+
+{"file_name":"test.md","file_content":"new content"}
 
 ```
 
@@ -74,6 +79,9 @@ guix -L .. server.scm
  curl -X POST -d '{"markdown":"## Header 2"}' http://127.0.0.1:8080/parse
 
 ```
+
+
+expected results
 
 ```html
 
