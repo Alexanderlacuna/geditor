@@ -31,7 +31,7 @@ guix shell --container --network --share=$HOME/test_repo=/test_repo
 ``` bash
 
 
-guix -L .. server.scm
+guile  -L .. server.scm
 
 ```
 
@@ -49,7 +49,9 @@ guix -L .. server.scm
 expected results
 
 ```json
-//expected eample results
+
+
+
 {"success":" : Committed changes with message: make test commit New Commit SHA: 6e47001cb9b596cda8c5a97fbd257b811867f983"}
 
 ```
