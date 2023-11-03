@@ -35,21 +35,12 @@ guix -L .. server.scm
 
 ```
 
-* Usage
-
-** Parsing Markdown to HTML
+###  Usage
 
 
-```bash
-
-
-curl -X POST http://127.0.0.1:8080/parse  -H 'Content-Type: application/json' -d '{"markdown":"## Header 2"}'
-
-```
-```bash
 *  to commit changes
-```bash
 
+```bash
  curl -X POST http://127.0.0.1:8080/edit -H 'Content-Type: application/json' -d '{"msg":"make test commit","filename":"test.md","repo":"/test_repo","filename":"test.md","content":"new content"}'
 
 ```
@@ -60,6 +51,7 @@ curl -X POST http://127.0.0.1:8080/parse  -H 'Content-Type: application/json' -d
 {"success":" : Committed changes with message: make test commit New Commit SHA: 6e47001cb9b596cda8c5a97fbd257b811867f983"}
 
 ```
+
 
 * edit file
 
@@ -86,6 +78,7 @@ curl -X POST http://127.0.0.1:8080/parse  -H 'Content-Type: application/json' -d
 ```html
 
 <h2>Header 2</h2>
+
 ```
 ## License
 see License File
